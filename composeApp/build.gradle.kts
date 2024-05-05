@@ -33,8 +33,9 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+//            implementation(compose.material)
             implementation(compose.ui)
+            implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
@@ -109,3 +110,11 @@ android {
     }
 }
 
+
+sqldelight {
+    databases {
+        create("FitnessDatabase") {
+            packageName.set("com.byteme.fitness")
+        }
+    }
+}

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Fitness App</string>
+
+
+    <string name="open">Открыть</string>
+
+    <string name="name">Имя</string>
+    <string name="height">Рост</string>
+    <string name="weight">Вес</string>
+</resources>

@@ -1,0 +1,15 @@
+CREATE TABLE Profile (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT,
+    initialHeight REAL,
+    initialWeight REAL
+);
+
+insert:
+INSERT INTO Profile(id, name, initialHeight, initialWeight)
+VALUES (?, ?, ?, ?);
+
+selectById:
+SELECT Profile.*
+FROM Profile
+WHERE id = ?;

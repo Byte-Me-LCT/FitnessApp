@@ -1,0 +1,14 @@
+CREATE TABLE Parameters (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    dateTimestamp INTEGER,
+    weight REAL,
+    height REAL
+);
+
+insert:
+INSERT INTO Parameters(dateTimestamp, weight, height)
+VALUES(?, ?, ?);
+
+selectAll:
+SELECT Parameters.*
+FROM Parameters;
