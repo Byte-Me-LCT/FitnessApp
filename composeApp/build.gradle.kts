@@ -27,6 +27,8 @@ kotlin {
             isStatic = true
         }
     }
+
+    task("testClasses")
     
     sourceSets {
 
@@ -56,6 +58,8 @@ kotlin {
             implementation(libs.coil)
             implementation(libs.coil.network.ktor)
             implementation(libs.coil.compose)
+
+            implementation(libs.chart)
         }
 
         androidMain.dependencies {
@@ -117,4 +121,5 @@ sqldelight {
             packageName.set("com.byteme.fitness")
         }
     }
+    linkSqlite = true
 }
