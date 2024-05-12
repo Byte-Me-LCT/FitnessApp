@@ -42,10 +42,13 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.datetime)
+
             implementation(libs.coroutines)
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
             implementation(libs.lifecycle.viewmodel)
 
             implementation(libs.koin.core)
@@ -60,6 +63,8 @@ kotlin {
             implementation(libs.coil.compose)
 
             implementation(libs.chart)
+
+            implementation(libs.datastore)
         }
 
         androidMain.dependencies {

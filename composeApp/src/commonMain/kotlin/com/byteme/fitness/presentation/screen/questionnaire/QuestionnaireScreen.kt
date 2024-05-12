@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -31,8 +33,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.aay.compose.barChart.BarChart
 import com.aay.compose.barChart.model.BarParameters
+import com.aay.compose.baseComponents.model.LegendPosition
+import com.byteme.fitness.core.StateField
 import fitnessapp.composeapp.generated.resources.Res
 import fitnessapp.composeapp.generated.resources.height
+import fitnessapp.composeapp.generated.resources.load
 import fitnessapp.composeapp.generated.resources.name
 import fitnessapp.composeapp.generated.resources.save
 import fitnessapp.composeapp.generated.resources.weight
@@ -89,7 +94,8 @@ class QuestionnaireScreen : Screen {
             onNameChanged = viewModel::changeName,
             onHeightChanged = viewModel::changeHeight,
             onWeightChanged = viewModel::changeWeight,
-            onSaveClicked = viewModel::validateAndSave
+            onSaveClicked = viewModel::validateAndSave,
+            onLoadClicked = viewModel::loadAuth
         )
     }
 
@@ -100,10 +106,13 @@ class QuestionnaireScreen : Screen {
         onHeightChanged: (String) -> Unit,
         onWeightChanged: (String) -> Unit,
         onSaveClicked: () -> Unit,
+        onLoadClicked: () -> Unit,
     ) {
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .padding(vertical = 24.dp, horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
@@ -130,6 +139,10 @@ class QuestionnaireScreen : Screen {
             SaveButton(
                 onSaveClicked = onSaveClicked
             )
+
+            LoadButton(
+                onLoadClicked = onLoadClicked
+            )
         }
     }
 
@@ -154,7 +167,7 @@ class QuestionnaireScreen : Screen {
             ),
         )
 
-        Box(Modifier.fillMaxWidth()) {
+        Box(Modifier.fillMaxWidth().height(300.dp)) {
             BarChart(
                 chartParameters = testBarParameters,
                 gridColor = Color.DarkGray,
@@ -173,7 +186,12 @@ class QuestionnaireScreen : Screen {
                 ),
                 yAxisRange = 15,
                 barWidth = 20.dp,
-                barCornerRadius = 16.dp
+                barCornerRadius = 16.dp,
+                descriptionStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = Color.White,
+                ),
+                legendPosition = LegendPosition.DISAPPEAR
             )
         }
     }
@@ -252,6 +270,24 @@ class QuestionnaireScreen : Screen {
             content = {
                 Text(
                     text = stringResource(Res.string.save)
+                )
+            }
+        )
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    @Composable
+    private fun LoadButton(
+        onLoadClicked: () -> Unit
+    ) {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            onClick = onLoadClicked,
+            content = {
+                Text(
+                    text = stringResource(Res.string.load)
                 )
             }
         )

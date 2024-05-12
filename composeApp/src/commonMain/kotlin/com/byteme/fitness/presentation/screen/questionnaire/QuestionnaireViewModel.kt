@@ -1,8 +1,11 @@
 package com.byteme.fitness.presentation.screen.questionnaire
 
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.byteme.fitness.core.StateField
 import com.byteme.fitness.core.utils.randomUUID
+import com.byteme.fitness.domain.model.profile.AuthData
 import com.byteme.fitness.domain.model.profile.Profile
+import com.byteme.fitness.domain.repository.AuthRepository
 import com.byteme.fitness.domain.repository.ProfileRepository
 import com.byteme.fitness.domain.usecase.ProfileValidator
 import com.byteme.fitness.presentation.base.BaseViewModel
@@ -14,7 +17,10 @@ import kotlinx.coroutines.withContext
 class QuestionnaireViewModel(
     private val profileRepository: ProfileRepository,
     private val profileValidator: ProfileValidator,
+    private val authRepository: AuthRepository,
 ) : BaseViewModel<QuestionnaireState, QuestionnaireEffect>(QuestionnaireState()) {
+
+    private var profileId: String? = null
 
 
     fun changeName(name: String) {
@@ -65,6 +71,27 @@ class QuestionnaireViewModel(
 
     }
 
+    fun loadAuth() {
+        screenModelScope.launch {
+            val id = profileId
+            if (id.isNullOrEmpty()) {
+                sendEffect(QuestionnaireEffect.Failed("fail"))
+            } else {
+
+                withContext(Dispatchers.Default) {
+
+                    authRepository.getTokenById(id)
+                }
+                    .onFailure {
+                        sendEffect(QuestionnaireEffect.Failed(it.message ?: "fail"))
+                    }
+                    .onSuccess {
+                        sendEffect(QuestionnaireEffect.Failed(it ?: "token is null!!!"))
+                    }
+            }
+        }
+    }
+
     private fun saveProfile(name: String, height: String, weight: String) {
         screenModelScope.launch {
             setSavingState()
@@ -77,7 +104,9 @@ class QuestionnaireViewModel(
                     height = height.toDouble(),
                     weight = weight.toDouble()
                 )
+                profileId = profile.id
                 profileRepository.save(profile)
+                authRepository.save(AuthData(profile.id, "token123"))
             }
                 .onFailure {
                     it.printStackTrace()

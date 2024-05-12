@@ -1,7 +1,9 @@
 package com.byteme.fitness.di
 
 import com.byteme.fitness.FitnessDatabase
+import com.byteme.fitness.data.repository.AuthRepositoryImpl
 import com.byteme.fitness.data.repository.ProfileRepositoryImpl
+import com.byteme.fitness.domain.repository.AuthRepository
 import com.byteme.fitness.domain.repository.ProfileRepository
 import com.byteme.fitness.domain.usecase.ProfileValidator
 import com.byteme.fitness.presentation.screen.questionnaire.QuestionnaireViewModel
@@ -19,6 +21,7 @@ private val viewModelsModule = module {
         QuestionnaireViewModel(
             profileRepository = get(),
             profileValidator = get(),
+            authRepository = get(),
         )
     }
 
@@ -38,6 +41,12 @@ private val repositoryModule = module {
             database = get()
         )
     }
+
+    single<AuthRepository> {
+        AuthRepositoryImpl(
+            dataStore = get()
+        )
+    }
 }
 
 private val useCaseModule = module {
@@ -49,6 +58,12 @@ private val useCaseModule = module {
 fun initKoin() {
 
     startKoin {
-        modules(viewModelsModule, dataModule, repositoryModule, useCaseModule, sqlDriverModule)
+        modules(
+            viewModelsModule,
+            dataModule,
+            repositoryModule,
+            useCaseModule,
+            platformModule
+        )
     }
 }
