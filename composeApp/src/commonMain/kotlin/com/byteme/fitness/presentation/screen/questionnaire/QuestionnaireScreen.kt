@@ -30,11 +30,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aay.compose.barChart.BarChart
 import com.aay.compose.barChart.model.BarParameters
 import com.aay.compose.baseComponents.model.LegendPosition
 import com.byteme.fitness.core.StateField
+import com.byteme.fitness.presentation.localcomposition.LocalNavBarState
+import com.byteme.fitness.presentation.localcomposition.LocalTopBarState
+import com.byteme.fitness.presentation.navigation.Destinations
+import com.byteme.fitness.presentation.screen.statistics.StatisticsScreen
 import fitnessapp.composeapp.generated.resources.Res
 import fitnessapp.composeapp.generated.resources.height
 import fitnessapp.composeapp.generated.resources.load
@@ -46,13 +53,25 @@ import org.jetbrains.compose.resources.stringResource
 
 class QuestionnaireScreen : Screen {
 
+    override val key: ScreenKey = Destinations.QUESTIONNAIRE
+
     @Composable
     override fun Content() {
         val viewModel = getScreenModel<QuestionnaireViewModel>()
         val screenState = viewModel.screenState
+        val topBarState = LocalTopBarState.current
+        val navBarState = LocalNavBarState.current
 
         val dialogState: MutableState<Pair<Boolean, String?>> = remember {
             mutableStateOf(false to null)
+        }
+
+        LaunchedEffect(Unit) {
+            topBarState.needShowTopBar = true
+            topBarState.title = "Анкета"
+            topBarState.isShowBackNavigate = true
+
+            navBarState.show()
         }
 
         LaunchedEffect(Unit) {
@@ -280,11 +299,14 @@ class QuestionnaireScreen : Screen {
     private fun LoadButton(
         onLoadClicked: () -> Unit
     ) {
+        val navigator = LocalNavigator.currentOrThrow
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            onClick = onLoadClicked,
+            onClick = {
+                navigator.push(StatisticsScreen("one"))
+            },
             content = {
                 Text(
                     text = stringResource(Res.string.load)
